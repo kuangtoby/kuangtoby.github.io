@@ -1,0 +1,695 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/vendors/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/vendors/font-awesome/css/font-awesome.min.css?v=4.4.0" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.0.2" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="Unity3D," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=5.0.2" />
+
+
+
+
+
+
+<meta name="description" content="在我的印象中，Unity一直没有一套成熟的界面体系。现在可供选择的不外乎NGUI和UGUI，之前也用过EZGUI和2D ToolKit，但最后我还是选择了NGUI。很多人说NGUI不好用。我的感觉是，一个工具，只要你对它足够熟悉，就一定有一套最适合它的使用方法。当然每个工具都一定有它的无法回避的缺点和硬伤，但大部分人只是使用方式不对罢了，还没到受工具局限性影响的阶段。
+选择NGUI作为主要的界面工">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈使用NGUI的界面架构">
+<meta property="og:url" content="http://yoursite.com/2016/10/14/浅谈使用NGUI的界面架构/index.html">
+<meta property="og:site_name" content="Thinking in Game Dev">
+<meta property="og:description" content="在我的印象中，Unity一直没有一套成熟的界面体系。现在可供选择的不外乎NGUI和UGUI，之前也用过EZGUI和2D ToolKit，但最后我还是选择了NGUI。很多人说NGUI不好用。我的感觉是，一个工具，只要你对它足够熟悉，就一定有一套最适合它的使用方法。当然每个工具都一定有它的无法回避的缺点和硬伤，但大部分人只是使用方式不对罢了，还没到受工具局限性影响的阶段。
+选择NGUI作为主要的界面工">
+<meta property="og:image" content="https://pic2.zhimg.com/488ccd310a8bba759d1cf636073b73bd_b.png">
+<meta property="og:image" content="https://pic2.zhimg.com/1637d3bff3eeb07dcd78ccaeeaf9e1fd_b.png">
+<meta property="og:image" content="https://pic1.zhimg.com/15fbad8119a39685f80c13da652c0768_b.png">
+<meta property="og:image" content="https://pic3.zhimg.com/f4a1c3c236cca64e0fe2f22af1a3682e_b.png">
+<meta property="og:updated_time" content="2016-10-14T12:08:15.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="浅谈使用NGUI的界面架构">
+<meta name="twitter:description" content="在我的印象中，Unity一直没有一套成熟的界面体系。现在可供选择的不外乎NGUI和UGUI，之前也用过EZGUI和2D ToolKit，但最后我还是选择了NGUI。很多人说NGUI不好用。我的感觉是，一个工具，只要你对它足够熟悉，就一定有一套最适合它的使用方法。当然每个工具都一定有它的无法回避的缺点和硬伤，但大部分人只是使用方式不对罢了，还没到受工具局限性影响的阶段。
+选择NGUI作为主要的界面工">
+<meta name="twitter:image" content="https://pic2.zhimg.com/488ccd310a8bba759d1cf636073b73bd_b.png">
+
+
+
+<script type="text/javascript" id="hexo.configuration">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"post"},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    }
+  };
+</script>
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2016/10/14/浅谈使用NGUI的界面架构/"/>
+
+
+  <title> 浅谈使用NGUI的界面架构 | Thinking in Game Dev </title>
+</head>
+
+<body itemscope itemtype="//schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="//schema.org/WPHeader">
+      <div class="header-inner"><div class="site-meta ">
+  
+
+  <div class="custom-logo-site-title">
+    <a href="/"  class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <span class="site-title">Thinking in Game Dev</span>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+  <p class="site-subtitle">kuangtoby的游戏开发随想</p>
+</div>
+
+<div class="site-nav-toggle">
+  <button>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+    <span class="btn-bar"></span>
+  </button>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="//schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                浅谈使用NGUI的界面架构
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            <span class="post-meta-item-icon">
+              <i class="fa fa-calendar-o"></i>
+            </span>
+            <span class="post-meta-item-text">发表于</span>
+            <time itemprop="dateCreated" datetime="2016-10-14T19:15:58+08:00" content="2016-10-14">
+              2016-10-14
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp;
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Unity3D/" itemprop="url" rel="index">
+                    <span itemprop="name">Unity3D</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+                &nbsp; | &nbsp;
+                <a href="/2016/10/14/浅谈使用NGUI的界面架构/#comments" itemprop="discussionUrl">
+                  <span class="post-comments-count ds-thread-count" data-thread-key="2016/10/14/浅谈使用NGUI的界面架构/" itemprop="commentsCount"></span>
+                </a>
+              </span>
+            
+          
+
+          
+
+          
+          
+
+          
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在我的印象中，Unity一直没有一套成熟的界面体系。现在可供选择的不外乎NGUI和UGUI，之前也用过EZGUI和2D ToolKit，但最后我还是选择了NGUI。<br>很多人说NGUI不好用。我的感觉是，一个工具，只要你对它足够熟悉，就一定有一套最适合它的使用方法。当然每个工具都一定有它的无法回避的缺点和硬伤，但大部分人只是使用方式不对罢了，还没到受工具局限性影响的阶段。</p>
+<p>选择NGUI作为主要的界面工具主要是基于以下考虑：</p>
+<p>有较多的文档，新人容易上手<br>功能比较全，一个手游需要的界面功能基本都有<br>有个MVVM工具NData可以和NGUI配合使用，这样可以极大地提高开发效率，适应需求修改。这个后面会详细介绍。<br><a id="more"></a><br><strong>一、界面架构</strong><br>在设计界面架构的时候，我主要想实现以下几个目的：</p>
+<p>把游戏的各个界面模块集中管理，统一调度，但又必须把每个模块之间的耦合性降到最低。这样可以不同的人开发不同的模块，互不干扰，做出来的东西运行起来又不会互相冲突。<br>把界面逻辑和界面版式尽量分离开来，让美术也可以参与界面的修改（事实证明，这个想法最后救了程序的命）。<br>界面模块的开发必须有一套统一的流程，统一的格式，方便不同的人维护。<br>在具体设计之前，首先要了解NGUI的局限性。</p>
+<p>NGUI有很多缺点，最受人诟病的就是性能问题和内存消耗问题。这两个问题都和NGUI的底层渲染机制有关。NGUI的渲染基于每一帧的Mesh重建，把一个UIPanel下的多个使用相同图集的UIWidget合并成一个Mesh，以此来减少draw call。NGUI本身对此做了优化，即如果一个UIPanel下的内容没有变化，就使用缓存的Mesh。但界面往往是不停变化的，这样就不可避免的每一帧都要重建Mesh，从而造成CPU的负担和多余的内存消耗。解决的方法就是把要经常变化和移动的界面放在单独的UIPanel下，去移动和变化UIPanel依附的物体。这样虽然会增加draw call，但节省了重建Mesh的性能损耗。</p>
+<p>因为这个问题，我把游戏模块分成一个个不同的页面，每个页面都有一个UIPanel，然后在一个统一的地方调度各个页面，这个统一的地方是一个单例类，叫做MainPageMgr。</p>
+<p>每个页面都有一个生命周期，即</p>
+<p><strong>出现：准备出现-&gt;播放出现动画-&gt;动画完毕，展示在目标位置</strong><br><strong>消失：准备消失-&gt;播放消失动画-&gt;完全消失</strong></p>
+<p>其中出现动画和消失动画由NGUI自带的UIPlayTween组件控制，直接把TweenPosition等脚本贴在UIPanel所在的物体上，让技术美术去调整。我把这一系列动作的逻辑都放在一个TweenPage类里，只要调一个弹出或消失的方法，就让它自动运行这个流程。</p>
+<p>TweenPage类中有一个Bring(Boolean isBringIn)方法提供给MainPageMgr调用：</p>
+<p>Bring(true)出现<br>Bring(false) 消失<br>当MainPageMgr调用一个页面TweenPage的Bring方法时，页面就按照它的生命周期开始运动，并触发相应的回调方法。</p>
+<p>TweenPage类中有以下回调接口，供具体的页面实现相关逻辑：</p>
+<ul>
+<li>OnPreBringIn 准备弹出的回调 </li>
+<li>OnBringIn 播放完弹出动画的回调 </li>
+<li>OnPreBringOut 准备播放消失动画的回调</li>
+<li>OnBringOut 完全消失的回调</li>
+</ul>
+<p>这样，只需要在具体的页面类中重写这几个接口，就可以在这几个时间点做一些事情。例如在OnPreBring接口中实现页面的数据刷新。<br>自此，页面TweenPage的框架基本成型，然后是实现MainPageMgr的统一调度。</p>
+<p>我的做法是把每个页面的TweenPage实例都添加到MainPageMgr中，然后在MainPageMgr中为每个TweenPage实例都提供一个弹出方法，如弹出或关闭英雄管理界面BringPageHero(Boolean isBringIn)。这个弹出方法可以根据不同页面的情况设置不同的参数，但都有一个Boolean值表示是让页面出现还是消失，并且都要调用MainPageMgr的BringPage(TweenPage page)方法。</p>
+<p>BringPage(TweenPage page)方法主要实现页面的统一调度管理，例如把一个页面显示到屏幕最前面，挡住其他所有页面。</p>
+<p>在MainPageMgr中实现List<tweenpage> pageList，用来保存当前已经打开的页面。我把页面设计成叠加遮挡模式，即一个页面弹出会叠在前一个页面上面并挡住它。pageList中就按顺序保存正处于打开状态的页面TweenPage实例。每次打开一个页面，都会给pageList中的所有TweenPage的UIPanel设置一个新的深度，并把当前已经打开的所有页面GameObject的Z轴往前移，这样可以确保夹在两个UIPanel之间的3D模型（如角色模型）显示正常。最后把要打开的页面加入到pageList中，并给它的UIPanel赋值一个当前最大的深度，使其可以遮挡前面所有的页面。让页面消失就使用相反的操作。这些操作都是用MainPageMgr的方法BringPage(Boolean isBringIn)实现。</tweenpage></p>
+<p>界面的调度逻辑基本就是这样，现在要加一个新的页面只需要新建一个继承TweenPage的类，贴上UIPanel和其他UIPlayTween组件，并在MainPageMgr中添加一个弹出方法即可。</p>
+<p>这里只是提供一个大致的思路，细节就不再深入说明了。</p>
+<p><strong>二、NData</strong><br>NData是三年前我无意中发现的一个界面插件，这个插件开启了我做U3D界面的新篇章，刚开始用的那个感觉，就好像写JSP的人突然用上了SSH。虽然这个插件的作者已经停止更新了，但他的MVVM思想非常值得借鉴。</p>
+<p>在刚接触NGUI的时候，我们一般会采用在脚本中获取NGUI 组件的形式给NGUI 组件赋值。有两种选择：一种是在代码中根据路径获取NGUI 组件；另一种是在场景中，直接把组件拖到脚本上。第一种方法的的缺点是需要维护NGUI组件的路径，第二种方法的缺点是替换组件时总是需要重新拖组件。两种方法都比较不方便，这里用第二种来举例。</p>
+<p>打个比方，我们界面右上角要显示玩家拥有的金币总数。于是我们做了个UILabel拖进脚本，在脚本里给它的text赋值显示当前金币数量。<br><img src="https://pic2.zhimg.com/488ccd310a8bba759d1cf636073b73bd_b.png" alt="此处输入图片的描述"><br>PagePlayer.cs中：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> UILabel goldLabel;</div><div class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetGold</span><span class="params">( <span class="built_in">string</span> gold )</span></span></div><div class="line">&#123;</div><div class="line">    goldLabel.text = gold;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>后来策划需求在左下角和右下角也要显示金币，于是我们又做了两个uilabel放到相应位置，并在脚本里添加变量，把新加的uilabel拖到脚本里。每次金币的值发生变化，就要找到所有的uilabel变量给他们一一赋值。<br><img src="https://pic2.zhimg.com/1637d3bff3eeb07dcd78ccaeeaf9e1fd_b.png" alt="此处输入图片的描述"></p>
+<p>PagePlayer.cs中：</p>
+<figure class="highlight arduino"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> UILabel goldLabel;</div><div class="line"><span class="keyword">public</span> UILabel goldLabel1;</div><div class="line"><span class="keyword">public</span> UILabel goldLabel2;</div><div class="line"><span class="keyword">public</span> <span class="keyword">void</span> SetGold( <span class="keyword">string</span> gold )</div><div class="line">&#123;</div><div class="line">    goldLabel.<span class="built_in">text</span> = gold;</div><div class="line">    goldLabel1.<span class="built_in">text</span> = gold;</div><div class="line">    goldLabel2.<span class="built_in">text</span> = gold;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>然而可能以后又会增加其它显示金币的界面，每加一个金币的UILabel，就要去脚本里增加一个UILabel 的变量然后在金币变化的时候给它赋值。虽然麻烦，但也能把功能做出来。我们不能就此满足，偷懒是提高生产力的最大动力。<br>现在想要简化这个流程，就要实现以下功能。</p>
+<ol>
+<li>不需要每次添加金币文字的时候都在脚本中新增一个UILabel变量，并把对应的UILabel组件拖进来。</li>
+<li>不需要每次修改金币的时候都要找到所有的金币UILabel变量去修改他们的值。</li>
+</ol>
+<p>初步的解决方案是这样子的：我希望脚本里面有一个值gold代表的是金币数量。所有的金币UILabel都跟这个值产生关联。只要修改这个值，所有跟他关联的UILabel 都自动发生变化。另外，在我要添加一个金币UILabel 的时候，我希望它能自动去找页面脚本中的gold变量来发生关联，而不需要我在脚本中改代码。</p>
+<p>具体实现的思路，就是在带有UILabel脚本的物体上加一个脚本，使其与页面脚本种的gold变量发生关联。然后给gold变量加set方法，在这个方法中发一个消息，告知所有和gold有过关联的的UILabel要发生值的改变。这样每次给gold变量赋值的时候，所有与其关联的UILabel就会自动更新显示的内容。</p>
+<p>本着不重复造轮子的原则，在疑似开始造轮子之前一定要Google一下。于是在网上搜出了MVVM模式,NData插件等等。并发现NData不仅可以用于UILabel，还可以用于各种NGUI组件，并有很好的绑定层级管理。</p>
+<p>具体的用法这篇博客里已经写的很清楚了</p>
+<p><a href="https://link.zhihu.com/?target=http://www.cnblogs.com/chongxin/p/3885657.html" target="_blank" rel="external">NGUI 学习笔记实战之二——商城数据绑定（Ndata）</a></p>
+<p>NData就是基于MVVM模式，其中用户自定义继承EZData.Context的类，就相当于是自定义ViewModel层的内容。</p>
+<p>剩下的问题就是，怎样用这个工具来管理页面。<br>根据上面的内容，我把界面分成很多个TweenPage，然后在单例MainPageMgr中统一管理。对于数据，我希望把每个页面的数据也独立出来，即每个页面有一个对应的继承EZData.Context的类，这个页面相关的数据都放在这个类中，然后再由MainPageMgr来统一管理。</p>
+<p>例如有个游戏页面PageInGame,用来显示游戏中获得的金币，钻石和星星。现在新建一个PageInGameContext继承EZData.Context。现在PageInGame页面就有一个model层PageInGame类和一个ViewModel层PageInGameContext类。View层自然就是PageInGame物体下面的NGUI组件了。这样就形成了MVVM模式。</p>
+<figure class="highlight vala"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div><div class="line">78</div><div class="line">79</div><div class="line">80</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">using</span> UnityEngine;</div><div class="line"><span class="keyword">using</span> System.Collections;</div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageInGameContext</span> : <span class="title">EZData</span>.<span class="title">Context</span></span></div><div class="line">&#123;</div><div class="line">    #region Property Gold</div><div class="line"></div><div class="line">    <span class="keyword">private</span> readonly EZData.Property&lt;<span class="keyword">int</span>&gt; _privateGoldProperty = <span class="keyword">new</span> EZData.Property&lt;<span class="keyword">int</span>&gt; ();</div><div class="line"></div><div class="line">    <span class="keyword">public</span> EZData.Property&lt;<span class="keyword">int</span>&gt; GoldProperty &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _privateGoldProperty; &#125; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Gold &#123;</div><div class="line">        <span class="keyword">get</span>    &#123; <span class="keyword">return</span> GoldProperty.GetValue (); &#125;</div><div class="line">        <span class="keyword">set</span>    &#123; GoldProperty.SetValue (value); &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    #endregion</div><div class="line"></div><div class="line"></div><div class="line">    #region Property Diamond</div><div class="line"></div><div class="line">    <span class="keyword">private</span> readonly EZData.Property&lt;<span class="keyword">int</span>&gt; _privateDiamondProperty = <span class="keyword">new</span> EZData.Property&lt;<span class="keyword">int</span>&gt; ();</div><div class="line"></div><div class="line">    <span class="keyword">public</span> EZData.Property&lt;<span class="keyword">int</span>&gt; DiamondProperty &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _privateDiamondProperty; &#125; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Diamond &#123;</div><div class="line">        <span class="keyword">get</span>    &#123; <span class="keyword">return</span> DiamondProperty.GetValue (); &#125;</div><div class="line">        <span class="keyword">set</span>    &#123; DiamondProperty.SetValue (value); &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    #endregion</div><div class="line"></div><div class="line">    #region Property Star</div><div class="line"></div><div class="line">    <span class="keyword">private</span> readonly EZData.Property&lt;<span class="keyword">int</span>&gt; _privateStarProperty = <span class="keyword">new</span> EZData.Property&lt;<span class="keyword">int</span>&gt; ();</div><div class="line"></div><div class="line">    <span class="keyword">public</span> EZData.Property&lt;<span class="keyword">int</span>&gt; StarProperty &#123; <span class="keyword">get</span> &#123; <span class="keyword">return</span> _privateStarProperty; &#125; &#125;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> <span class="keyword">int</span> Star &#123;</div><div class="line">        <span class="keyword">get</span>    &#123; <span class="keyword">return</span> StarProperty.GetValue (); &#125;</div><div class="line">        <span class="keyword">set</span>    &#123; StarProperty.SetValue (value); &#125;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    #endregion</div><div class="line"></div><div class="line">&#125;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PageInGame</span> : <span class="title">TweenPage</span> </span>&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> PageInGameContext Context;</div><div class="line"></div><div class="line">  </div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> Awake ()</div><div class="line">    &#123;</div><div class="line">        base.Awake ();</div><div class="line"></div><div class="line">        MainPageMgr.instance.Context.pageInGame = <span class="keyword">this</span>;</div><div class="line">        Context = MainPageMgr.instance.Context.pageInGameCtx;</div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">   </div><div class="line"></div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> OnPreBringIn ()</div><div class="line">    &#123;</div><div class="line">        base.OnPreBringIn ();</div><div class="line">       </div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="keyword">protected</span> <span class="keyword">override</span> <span class="keyword">void</span> OnPreBringOut ()</div><div class="line">    &#123;</div><div class="line">        base.OnPreBringOut ();</div><div class="line">       </div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>在MainPageMgr中有一个MainView Context是用来管理所有页面的Context（下文中继承EZData.Context的类，都统称为Context。）:</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> MainPageMgr : PageMgrSingleton&lt;MainPageMgr&gt;</div><div class="line">&#123;</div><div class="line"></div><div class="line">    <span class="keyword">public</span> NguiRootContext View;</div><div class="line">    <span class="comment">//这个代表页面模型</span></div><div class="line">    <span class="keyword">public</span> MainView Context;</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">void</span> <span class="title">Awake</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">      </div><div class="line">        Context = <span class="keyword">new</span> MainView();</div><div class="line">        SetContext();</div><div class="line"></div><div class="line"></div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">SetContext</span><span class="params">()</span></span></div><div class="line">    &#123;</div><div class="line">        View.SetContext(Context);</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>MainView.cs</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="keyword">class</span> MainView : EZData.Context</div><div class="line">&#123;</div><div class="line">   </div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MainView</span><span class="params">()</span></span></div><div class="line">    &#123;     </div><div class="line">        pageInGameCtx = <span class="keyword">new</span> PageInGameContext();</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    <span class="meta">#region viewModel   </span></div><div class="line">    <span class="keyword">public</span> PageInGameContext pageInGameCtx&#123; get; <span class="keyword">private</span> <span class="built_in">set</span>; &#125;   </div><div class="line">    <span class="meta">#endregion</span></div><div class="line"></div><div class="line">    <span class="meta">#region model</span></div><div class="line">    <span class="keyword">public</span> PageInGame pageInGame;</div><div class="line">    <span class="meta">#endregion</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p>这样，所有的页面都可以通过MainPageMgr.instance.Context来获取所有页面的Context，如pageXXXContext，也可以获得所有页面的逻辑脚本,如pagXXX。<br><img src="https://pic1.zhimg.com/15fbad8119a39685f80c13da652c0768_b.png" alt="此处输入图片的描述"><br>在场景里，只需要把页面放在MainPageMgr的下级，然后再通过Master path来绑定到MainPageMgr中的Context就可以了。<br><img src="https://pic3.zhimg.com/f4a1c3c236cca64e0fe2f22af1a3682e_b.png" alt="此处输入图片的描述"></p>
+<p>在开发中，可能出现不同的页面共用相同的数据，这种情况就可以直接把两个页面的Master Path绑定到同一个Context上，这样开发起来会方便很多。</p>
+<p><strong>总结：</strong></p>
+<p>引入NData这个插件，主要是为了减少一些对NGUI组件的操作（如获取组件和赋值等），把所有的工作都简化为改变Context中的值，来动态改变NGUI组件的显示。把各个页面的Context都统一管理，是为了更方便地获取数据，但原则上不应该在A页面的model层中去修改B页面Context中的数据，因为这样容易造成混乱。</p>
+<p>使用NData加NGUI，可以很快速地搭建一套页面框架。现在我已经把这两个工具专门打成插件包，开发新项目时直接导进去用，非常方便。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Unity3D/" rel="tag">#Unity3D</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/10/14/关于这个博客/" rel="next" title="关于这个博客">
+                <i class="fa fa-chevron-left"></i> 关于这个博客
+              </a>
+            
+          </div>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div class="ds-thread" data-thread-key="2016/10/14/浅谈使用NGUI的界面架构/"
+           data-title="浅谈使用NGUI的界面架构" data-url="http://yoursite.com/2016/10/14/浅谈使用NGUI的界面架构/">
+      </div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel ">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="//schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/avatar2.png"
+               alt="kuangtoby" />
+          <p class="site-author-name" itemprop="name">kuangtoby</p>
+          <p class="site-description motion-element" itemprop="description">作者kuangtoby，专注于Unity3D游戏开发，iOS游戏《疯狂钻机》的作者，在Unity Asset Store上发表了多个插件。</p>
+        </div>
+        <nav class="site-state motion-element">
+          <div class="site-state-item site-state-posts">
+            <a href="/archives">
+              <span class="site-state-item-count">2</span>
+              <span class="site-state-item-name">日志</span>
+            </a>
+          </div>
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+      </section>
+
+      
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+            
+              
+            
+            
+              <p class="post-toc-empty">此文章未包含目录</p>
+            
+          </div>
+        </section>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2016</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">kuangtoby</span>
+</div>
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+        
+
+        
+      </div>
+    </footer>
+
+    <div class="back-to-top">
+      <i class="fa fa-arrow-up"></i>
+    </div>
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+  
+  <script type="text/javascript" src="/vendors/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/vendors/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.0.2"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.0.2"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.0.2"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.0.2"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.0.2"></script>
+
+
+
+  
+
+  
+    
+  
+
+  <script type="text/javascript">
+    var duoshuoQuery = {short_name:"kuangtoby"};
+    (function() {
+      var ds = document.createElement('script');
+      ds.type = 'text/javascript';ds.async = true;
+      ds.id = 'duoshuo-script';
+      ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+      ds.charset = 'UTF-8';
+      (document.getElementsByTagName('head')[0]
+      || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+  </script>
+
+  
+    
+    <script src="/vendors/ua-parser-js/dist/ua-parser.min.js?v=0.7.9"></script>
+    <script src="/js/src/hook-duoshuo.js"></script>
+  
+
+
+
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
